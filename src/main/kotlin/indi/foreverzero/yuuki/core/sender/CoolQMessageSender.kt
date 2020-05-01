@@ -1,6 +1,7 @@
 package indi.foreverzero.yuuki.core.sender
 
-import indi.foreverzero.yuuki.core.sender.entity.MessageBody
+import indi.foreverzero.yuuki.core.sender.entity.GroupMessageBody
+import indi.foreverzero.yuuki.core.sender.entity.PrivateMessageBody
 import indi.foreverzero.yuuki.core.sender.entity.SendMessageResponse
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -19,6 +20,7 @@ class CoolQMessageSender: MessageSender {
 
     companion object PATH {
         const val SEND_PRIVATE_MSG = "/send_private_msg"
+        const val SEND_GROUP_MSG = "/send_group_msg"
     }
 
     @Autowired
@@ -27,7 +29,15 @@ class CoolQMessageSender: MessageSender {
     override fun sendPrivateMessage(userId: Int, message: String): Int? {
         log.info("向好友${userId}发送消息:\n$message")
         val url = coolqUrl + SEND_PRIVATE_MSG
-        val msg = MessageBody(userId = userId, message = message)
+        val msg = PrivateMessageBody(userId = userId, message = message)
+        val response = restTemplate.postForObject(url, msg, SendMessageResponse::class.java)
+        return response?.messageId
+    }
+
+    override fun sendGroupMessage(groupId: Int, message: String): Int? {
+        log.info("向群${groupId}发送消息:\n$message")
+        val url = coolqUrl + SEND_GROUP_MSG
+        val msg = GroupMessageBody(groupId = groupId, message = message)
         val response = restTemplate.postForObject(url, msg, SendMessageResponse::class.java)
         return response?.messageId
     }

@@ -13,12 +13,12 @@ abstract class Event {
     }
 
     /**
-     * 自身ID，一般为QQ号
+     * 自身QQ号
      */
     val selfId: String
 
     /**
-     * 时间发生的时间
+     * 事件发生的时间
      */
     val time: LocalDateTime
 }

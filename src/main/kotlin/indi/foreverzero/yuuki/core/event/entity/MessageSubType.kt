@@ -4,10 +4,10 @@ enum class MessageSubType {
     FRIEND,
     GROUP,
     DISCUSS,
-    OTHER,
     NORMAL,
     ANONYMOUS,
-    NOTICE
+    NOTICE,
+    OTHER,
     ;
 
     companion object {

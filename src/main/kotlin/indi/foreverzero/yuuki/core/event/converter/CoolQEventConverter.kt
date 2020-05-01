@@ -35,6 +35,7 @@ class CoolQEventConverter : EventMessageConverter {
     fun convertMessage(jsonData: JSONObject): MessageEvent {
         return when (val messageType = jsonData.getString("message_type")) {
             "private" -> convertPrivateMessage(jsonData)
+            "group" -> convertGroupMessage(jsonData)
             else -> throw UnknownMessageTypeException("无法识别的message_type: $messageType")
         }
     }
@@ -55,6 +56,29 @@ class CoolQEventConverter : EventMessageConverter {
     }
 
     /**
+     * 转化群聊消息对象
+     */
+    fun convertGroupMessage(jsonData: JSONObject): GroupMessageEvent {
+        val groupMessageEvent = GroupMessageEvent(
+                selfId = jsonData.getString("self_id"),
+                time = CommonUtils.convertToLocalDateTime(jsonData.getLong("time") * 1000),
+                sender = convertSender(jsonData.getJSONObject("sender")),
+                message = jsonData.getString("message"),
+                rawMessage = jsonData.getString("raw_message"),
+                subType = MessageSubType.parse(jsonData.getString("sub_type")),
+                messageId = jsonData.getIntValue("message_id"),
+                groupId = jsonData.getIntValue("group_id")
+        )
+
+        // 非匿名聊天该对象为空
+        val anonymousJson = jsonData.getJSONObject("anonymous")
+        if (anonymousJson != null) {
+            groupMessageEvent.anonymous = convertAnonymous(anonymousJson)
+        }
+        return groupMessageEvent
+    }
+
+    /**
      * 转化发送者对象
      */
     fun convertSender(senderJson: JSONObject): Sender {
@@ -63,6 +87,17 @@ class CoolQEventConverter : EventMessageConverter {
                 nickName = senderJson.getString("nickname"),
                 sex = Sex.parse(senderJson.getString("sex")),
                 age = senderJson.getIntValue("age")
+        )
+    }
+
+    /**
+     * 转化匿名用户对象
+     */
+    fun convertAnonymous(jsonData: JSONObject): Anonymous {
+        return Anonymous(
+                id = jsonData.getIntValue("id"),
+                name = jsonData.getString("name"),
+                flag = jsonData.getString("flag")
         )
     }
 }

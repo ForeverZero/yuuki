@@ -2,6 +2,7 @@ package indi.foreverzero.yuuki.core.service.impl
 
 import com.alibaba.fastjson.JSONObject
 import indi.foreverzero.yuuki.core.event.converter.EventMessageConverter
+import indi.foreverzero.yuuki.core.event.entity.GroupMessageEvent
 import indi.foreverzero.yuuki.core.event.entity.MessageSubType
 import indi.foreverzero.yuuki.core.event.entity.PrivateMessageEvent
 import indi.foreverzero.yuuki.core.sender.MessageSender
@@ -27,10 +28,16 @@ class EventNoticeServiceImpl : IEventNoticeService {
         val event = converter.convert(eventBody)
         log.info("事件: {}", JSONObject.toJSONString(event))
 
-        // DEBUG代码
-        if (event is PrivateMessageEvent && event.subType == MessageSubType.FRIEND) {
+        // DEBUG，复读私聊
+        if (event is PrivateMessageEvent) {
             val msg = "${event.sender.nickName} (${event.sender.userId}) 说:\n${event.message}"
             messageSender.sendPrivateMessage(event.sender.userId, msg)
         }
+
+        // DEBUG，复读群聊
+//        if (event is GroupMessageEvent) {
+//            val msg = "群${event.groupId}的 ${event.sender.nickName} (${event.sender.userId}) 说:\n${event.message}"
+//            messageSender.sendGroupMessage(event.groupId, msg)
+//        }
     }
 }
