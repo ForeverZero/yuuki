@@ -4,4 +4,4 @@ logging:
   level:
     indi.foreverzero.yuuki: DEBUG
   file:
-    path: logs/
+    name: logs/yuuki.log

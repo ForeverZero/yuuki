@@ -1,9 +1,8 @@
 package indi.foreverzero.yuuki.core.controller
 
-import com.alibaba.fastjson.JSONObject
 import indi.foreverzero.yuuki.common.ResultDTO
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import indi.foreverzero.yuuki.core.service.IEventNoticeService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -11,16 +10,12 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class EventNoticeController {
 
-    val log: Logger = LoggerFactory.getLogger(this.javaClass)
+    @Autowired
+    lateinit var service: IEventNoticeService
 
-    @PostMapping("yuuki/event")
+    @PostMapping("event")
     fun eventNotice(@RequestBody eventBody: String): Any {
-        log.debug(eventBody)
-        try {
-            val jsonData = JSONObject.parse(eventBody)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        service.handleEvent(eventBody)
         return ResultDTO<Any>()
     }
 }
