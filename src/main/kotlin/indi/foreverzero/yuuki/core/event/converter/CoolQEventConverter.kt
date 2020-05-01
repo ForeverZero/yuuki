@@ -86,7 +86,12 @@ class CoolQEventConverter : EventMessageConverter {
                 userId = senderJson.getIntValue("user_id"),
                 nickName = senderJson.getString("nickname"),
                 sex = Sex.parse(senderJson.getString("sex")),
-                age = senderJson.getIntValue("age")
+                age = senderJson.getIntValue("age"),
+                card = senderJson.getString("card"),
+                area = senderJson.getString("area"),
+                level = senderJson.getString("level"),
+                role = senderJson.getString("role"),
+                title = senderJson.getString("title")
         )
     }
 
