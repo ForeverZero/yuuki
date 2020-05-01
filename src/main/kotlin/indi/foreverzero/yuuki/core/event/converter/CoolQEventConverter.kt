@@ -31,7 +31,7 @@ class CoolQEventConverter : EventMessageConverter {
     /**
      * 转化Message对象
      */
-    fun convertMessage(jsonData: JSONObject): Message {
+    fun convertMessage(jsonData: JSONObject): MessageEvent {
         return when (jsonData.getString("message_type")) {
             "private" -> convertPrivateChatMessage(jsonData)
             else -> throw EventMessageHandleException("无法识别的message_type")
@@ -41,15 +41,15 @@ class CoolQEventConverter : EventMessageConverter {
     /**
      * 转化私聊消息对象
      */
-    fun convertPrivateChatMessage(jsonData: JSONObject): PrivateChatMessage {
-        val privateChatMessage = PrivateChatMessage(jsonData.getString("self_id"), CommonUtils.convertToLocalDateTime(jsonData.getLong("time") * 1000))
-        privateChatMessage.message = jsonData.getString("message")
-        privateChatMessage.rawMessage = jsonData.getString("rawMessage")
-        privateChatMessage.type = MessageTypeEnum.parse(jsonData.getString("sub_type"))
-        privateChatMessage.messageId = jsonData.getIntValue("messageId")
-        privateChatMessage.sender = convertSender(jsonData.getJSONObject("sender"))
+    fun convertPrivateChatMessage(jsonData: JSONObject): MessageEvent {
+        val msgEvent = MessageEvent(jsonData.getString("self_id"), CommonUtils.convertToLocalDateTime(jsonData.getLong("time") * 1000))
+        msgEvent.message = jsonData.getString("message")
+        msgEvent.rawMessage = jsonData.getString("rawMessage")
+        msgEvent.type = MessageTypeEnum.parse(jsonData.getString("sub_type"))
+        msgEvent.messageId = jsonData.getIntValue("messageId")
+        msgEvent.sender = convertSender(jsonData.getJSONObject("sender"))
 
-        return privateChatMessage
+        return msgEvent
     }
 
     /**
