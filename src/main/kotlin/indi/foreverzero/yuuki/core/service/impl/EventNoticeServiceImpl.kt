@@ -1,7 +1,7 @@
 package indi.foreverzero.yuuki.core.service.impl
 
 import com.alibaba.fastjson.JSONObject
-import indi.foreverzero.yuuki.core.event.EventMessageConverter
+import indi.foreverzero.yuuki.core.event.converter.EventMessageConverter
 import indi.foreverzero.yuuki.core.service.IEventNoticeService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

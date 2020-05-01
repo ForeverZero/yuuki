@@ -1,4 +1,4 @@
-package indi.foreverzero.yuuki.core.event
+package indi.foreverzero.yuuki.core.event.converter
 
 import indi.foreverzero.yuuki.core.event.entity.BaseEvent
 
