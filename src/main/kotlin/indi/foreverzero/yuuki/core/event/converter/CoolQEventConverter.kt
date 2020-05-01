@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject
 import indi.foreverzero.yuuki.common.CommonUtils
 import indi.foreverzero.yuuki.core.event.entity.*
 import indi.foreverzero.yuuki.core.event.exception.EventMessageHandleException
+import indi.foreverzero.yuuki.core.event.exception.UnknownMessageTypeException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -13,7 +14,7 @@ class CoolQEventConverter : EventMessageConverter {
 
     val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
-    override fun convert(eventBody: String): BaseEvent {
+    override fun convert(eventBody: String): Event {
         val jsonData: JSONObject
         try {
             jsonData = JSONObject.parseObject(eventBody)
@@ -32,26 +33,25 @@ class CoolQEventConverter : EventMessageConverter {
      * 转化Message对象
      */
     fun convertMessage(jsonData: JSONObject): MessageEvent {
-        val msgType = jsonData.getString("message_type")
-        return when (msgType) {
-            "private" -> convertPrivateChatMessage(jsonData)
-            else -> throw EventMessageHandleException("无法识别的message_type: $msgType")
+        return when (val messageType = jsonData.getString("message_type")) {
+            "private" -> convertPrivateMessage(jsonData)
+            else -> throw UnknownMessageTypeException("无法识别的message_type: $messageType")
         }
     }
 
     /**
-     * 转化私聊消息对象
+     * 转化私聊消息
      */
-    fun convertPrivateChatMessage(jsonData: JSONObject): MessageEvent {
-        val msgEvent = MessageEvent(jsonData.getString("self_id"),
-                CommonUtils.convertToLocalDateTime(jsonData.getLong("time") * 1000),
-                convertSender(jsonData.getJSONObject("sender")))
-        msgEvent.message = jsonData.getString("message")
-        msgEvent.rawMessage = jsonData.getString("rawMessage")
-        msgEvent.type = MessageTypeEnum.parse(jsonData.getString("sub_type"))
-        msgEvent.messageId = jsonData.getIntValue("messageId")
-
-        return msgEvent
+    fun convertPrivateMessage(jsonData: JSONObject): PrivateMessageEvent {
+        return PrivateMessageEvent(
+                selfId = jsonData.getString("self_id"),
+                time = CommonUtils.convertToLocalDateTime(jsonData.getLong("time") * 1000),
+                sender = convertSender(jsonData.getJSONObject("sender")),
+                message = jsonData.getString("message"),
+                rawMessage = jsonData.getString("raw_message"),
+                subType = MessageSubType.parse(jsonData.getString("sub_type")),
+                messageId = jsonData.getIntValue("message_id")
+        )
     }
 
     /**
@@ -61,7 +61,7 @@ class CoolQEventConverter : EventMessageConverter {
         return Sender(
                 userId = senderJson.getIntValue("user_id"),
                 nickName = senderJson.getString("nickname"),
-                sex = SexEnum.parse(senderJson.getString("sex")),
+                sex = Sex.parse(senderJson.getString("sex")),
                 age = senderJson.getIntValue("age")
         )
     }

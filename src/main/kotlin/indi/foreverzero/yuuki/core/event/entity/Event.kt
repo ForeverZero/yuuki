@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 /**
  * 事件基类
  */
-abstract class BaseEvent {
+abstract class Event {
 
     constructor(selfId: String, time: LocalDateTime) {
         this.selfId = selfId

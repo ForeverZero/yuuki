@@ -2,8 +2,8 @@ package indi.foreverzero.yuuki.core.service.impl
 
 import com.alibaba.fastjson.JSONObject
 import indi.foreverzero.yuuki.core.event.converter.EventMessageConverter
-import indi.foreverzero.yuuki.core.event.entity.MessageEvent
-import indi.foreverzero.yuuki.core.event.entity.MessageTypeEnum
+import indi.foreverzero.yuuki.core.event.entity.MessageSubType
+import indi.foreverzero.yuuki.core.event.entity.PrivateMessageEvent
 import indi.foreverzero.yuuki.core.sender.MessageSender
 import indi.foreverzero.yuuki.core.service.IEventNoticeService
 import org.slf4j.Logger
@@ -18,6 +18,7 @@ class EventNoticeServiceImpl : IEventNoticeService {
 
     @Autowired
     lateinit var converter: EventMessageConverter
+
     @Autowired
     lateinit var messageSender: MessageSender
 
@@ -26,8 +27,9 @@ class EventNoticeServiceImpl : IEventNoticeService {
         val event = converter.convert(eventBody)
         log.info("事件: {}", JSONObject.toJSONString(event))
 
-        if (event is MessageEvent && event.type == MessageTypeEnum.FRIEND) {
-            val msg = "${event.sender.nickName} 说:\n${event.message}"
+        // DEBUG代码
+        if (event is PrivateMessageEvent && event.subType == MessageSubType.FRIEND) {
+            val msg = "${event.sender.nickName} (${event.sender.userId}) 说:\n${event.message}"
             messageSender.sendPrivateMessage(event.sender.userId, msg)
         }
     }
