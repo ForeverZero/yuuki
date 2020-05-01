@@ -2,17 +2,19 @@ package indi.foreverzero.yuuki.core.event
 
 import com.alibaba.fastjson.JSONObject
 import indi.foreverzero.yuuki.common.CommonUtils
+import indi.foreverzero.yuuki.core.event.entity.BaseEvent
+import indi.foreverzero.yuuki.core.event.entity.PrivateChatMessage
 import indi.foreverzero.yuuki.core.event.exception.EventMessageHandleException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
-class CoolQEventHandler : EventMessageHandler {
+class CoolQEventConverter : EventMessageConverter {
 
     val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
-    override fun handle(eventBody: String): BaseEvent {
+    override fun convert(eventBody: String): BaseEvent {
         val jsonData: JSONObject
         try {
             jsonData = JSONObject.parseObject(eventBody)
