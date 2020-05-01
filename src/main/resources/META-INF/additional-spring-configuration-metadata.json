@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "coolq.url",
+      "type": "java.lang.String",
+      "description": "Description for coolq.url."
+  }
+] }

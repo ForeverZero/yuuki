@@ -22,9 +22,9 @@ class CoolQEventConverter : EventMessageConverter {
             throw EventMessageHandleException(e.message, e)
         }
 
-        return when (jsonData.getString("post_type")) {
+        return when (val postType = jsonData.getString("post_type")) {
             "message" -> convertMessage(jsonData)
-            else -> throw EventMessageHandleException("无法识别的post_type")
+            else -> throw EventMessageHandleException("无法识别的post_type: $postType")
         }
     }
 
@@ -32,9 +32,10 @@ class CoolQEventConverter : EventMessageConverter {
      * 转化Message对象
      */
     fun convertMessage(jsonData: JSONObject): MessageEvent {
-        return when (jsonData.getString("message_type")) {
+        val msgType = jsonData.getString("message_type")
+        return when (msgType) {
             "private" -> convertPrivateChatMessage(jsonData)
-            else -> throw EventMessageHandleException("无法识别的message_type")
+            else -> throw EventMessageHandleException("无法识别的message_type: $msgType")
         }
     }
 
@@ -42,12 +43,13 @@ class CoolQEventConverter : EventMessageConverter {
      * 转化私聊消息对象
      */
     fun convertPrivateChatMessage(jsonData: JSONObject): MessageEvent {
-        val msgEvent = MessageEvent(jsonData.getString("self_id"), CommonUtils.convertToLocalDateTime(jsonData.getLong("time") * 1000))
+        val msgEvent = MessageEvent(jsonData.getString("self_id"),
+                CommonUtils.convertToLocalDateTime(jsonData.getLong("time") * 1000),
+                convertSender(jsonData.getJSONObject("sender")))
         msgEvent.message = jsonData.getString("message")
         msgEvent.rawMessage = jsonData.getString("rawMessage")
         msgEvent.type = MessageTypeEnum.parse(jsonData.getString("sub_type"))
         msgEvent.messageId = jsonData.getIntValue("messageId")
-        msgEvent.sender = convertSender(jsonData.getJSONObject("sender"))
 
         return msgEvent
     }
