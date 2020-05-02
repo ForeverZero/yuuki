@@ -36,6 +36,7 @@ class CoolQEventConverter : EventMessageConverter {
         return when (val messageType = jsonData.getString("message_type")) {
             "private" -> convertPrivateMessage(jsonData)
             "group" -> convertGroupMessage(jsonData)
+            "discuss" -> convertDiscussMessage(jsonData)
             else -> throw UnknownMessageTypeException("无法识别的message_type: $messageType")
         }
     }
@@ -76,6 +77,22 @@ class CoolQEventConverter : EventMessageConverter {
             groupMessageEvent.anonymous = convertAnonymous(anonymousJson)
         }
         return groupMessageEvent
+    }
+
+    /**
+     * 转化讨论组消息对象
+     */
+    fun convertDiscussMessage(jsonData: JSONObject): DiscussMessageEvent {
+        return DiscussMessageEvent(
+                selfId = jsonData.getString("self_id"),
+                time = CommonUtils.convertToLocalDateTime(jsonData.getLong("time") * 1000),
+                sender = convertSender(jsonData.getJSONObject("sender")),
+                message = jsonData.getString("message"),
+                rawMessage = jsonData.getString("raw_message"),
+                subType = MessageSubType.parse(jsonData.getString("sub_type")),
+                messageId = jsonData.getIntValue("message_id"),
+                discussId = jsonData.getIntValue("discuss_id")
+        )
     }
 
     /**

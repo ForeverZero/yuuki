@@ -1,5 +1,6 @@
 package indi.foreverzero.yuuki.core.sender
 
+import indi.foreverzero.yuuki.core.sender.entity.DiscussMessageBody
 import indi.foreverzero.yuuki.core.sender.entity.GroupMessageBody
 import indi.foreverzero.yuuki.core.sender.entity.PrivateMessageBody
 import indi.foreverzero.yuuki.core.sender.entity.SendMessageResponse
@@ -21,6 +22,7 @@ class CoolQMessageSender: MessageSender {
     companion object PATH {
         const val SEND_PRIVATE_MSG = "/send_private_msg"
         const val SEND_GROUP_MSG = "/send_group_msg"
+        const val SEND_DISCUSS_MSG = "/send_discuss_msg"
     }
 
     @Autowired
@@ -38,6 +40,14 @@ class CoolQMessageSender: MessageSender {
         log.info("向群${groupId}发送消息:\n$message")
         val url = coolqUrl + SEND_GROUP_MSG
         val msg = GroupMessageBody(groupId = groupId, message = message)
+        val response = restTemplate.postForObject(url, msg, SendMessageResponse::class.java)
+        return response?.messageId
+    }
+
+    override fun sendDiscussMessage(discussId: Int, message: String): Int? {
+        log.info("向讨论组${discussId}发送消息:\n$message")
+        val url = coolqUrl + SEND_DISCUSS_MSG
+        val msg = DiscussMessageBody(discussId = discussId, message = message)
         val response = restTemplate.postForObject(url, msg, SendMessageResponse::class.java)
         return response?.messageId
     }
