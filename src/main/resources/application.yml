@@ -1,9 +1,18 @@
 server:
   port: 10010
+
 logging:
   level:
     indi.foreverzero.yuuki: DEBUG
   file:
     name: logs/yuuki.log
+
+spring:
+  thymeleaf:
+    cache: false
+
+yuuki:
+  host: http://127.0.0.1:${server.port}/
+
 coolq:
   url: http://127.0.0.1:10011
