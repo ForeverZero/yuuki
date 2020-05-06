@@ -1,6 +1,6 @@
-package indi.foreverzero.yuuki.core.sender
+package indi.foreverzero.yuuki.core.im
 
-interface MessageSender {
+interface ImProxy {
     /**
      * 向好友发送私聊，普通字符串
      */

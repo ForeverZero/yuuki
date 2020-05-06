@@ -1,9 +1,9 @@
-package indi.foreverzero.yuuki.core.sender
+package indi.foreverzero.yuuki.core.im
 
-import indi.foreverzero.yuuki.core.sender.entity.DiscussMessageBody
-import indi.foreverzero.yuuki.core.sender.entity.GroupMessageBody
-import indi.foreverzero.yuuki.core.sender.entity.PrivateMessageBody
-import indi.foreverzero.yuuki.core.sender.entity.SendMessageResponse
+import indi.foreverzero.yuuki.core.im.entity.DiscussMessageBody
+import indi.foreverzero.yuuki.core.im.entity.GroupMessageBody
+import indi.foreverzero.yuuki.core.im.entity.PrivateMessageBody
+import indi.foreverzero.yuuki.core.im.entity.SendMessageResponse
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 
 @Component
-class CoolQMessageSender: MessageSender {
+class CoolQImProxy: ImProxy {
 
     val log: Logger = LoggerFactory.getLogger(this.javaClass)
 

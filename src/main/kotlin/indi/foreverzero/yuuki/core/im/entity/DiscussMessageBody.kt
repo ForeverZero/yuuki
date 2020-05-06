@@ -1,10 +1,10 @@
-package indi.foreverzero.yuuki.core.sender.entity
+package indi.foreverzero.yuuki.core.im.entity
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class GroupMessageBody(
-        @JsonProperty("group_id")
-        val groupId: Int?,
+data class DiscussMessageBody(
+        @JsonProperty("discuss_id")
+        val discussId: Int?,
         val message: String,
         @JsonProperty("auto_escape")
         val autoEscape: Boolean = false

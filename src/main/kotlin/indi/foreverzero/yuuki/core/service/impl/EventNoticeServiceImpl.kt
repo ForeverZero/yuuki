@@ -1,12 +1,10 @@
 package indi.foreverzero.yuuki.core.service.impl
 
 import com.alibaba.fastjson.JSONObject
-import indi.foreverzero.yuuki.common.CommonUtils
 import indi.foreverzero.yuuki.core.event.converter.EventMessageConverter
 import indi.foreverzero.yuuki.core.event.entity.PrivateMessageEvent
-import indi.foreverzero.yuuki.core.sender.MessageSender
+import indi.foreverzero.yuuki.core.im.ImProxy
 import indi.foreverzero.yuuki.core.service.IEventNoticeService
-import indi.foreverzero.yuuki.web.cache.WebCache
 import indi.foreverzero.yuuki.web.service.IYuukiWebService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -26,7 +24,7 @@ class EventNoticeServiceImpl : IEventNoticeService {
     lateinit var converter: EventMessageConverter
 
     @Autowired
-    lateinit var messageSender: MessageSender
+    lateinit var imProxy: ImProxy
     @Autowired
     lateinit var webService: IYuukiWebService
 
@@ -36,10 +34,11 @@ class EventNoticeServiceImpl : IEventNoticeService {
         log.info("事件: {}", JSONObject.toJSONString(event))
 
         // 处理登录登录
+        // TODO 不够优雅
         if (event is PrivateMessageEvent && "登录" == event.message) {
             val code = webService.generateLoginCode(event.sender)
             val msg = "你的登录地址为: ${selfHost}/login?code=$code"
-            messageSender.sendPrivateMessage(event.sender.userId, msg)
+            imProxy.sendPrivateMessage(event.sender.userId, msg)
             return
         }
     }
