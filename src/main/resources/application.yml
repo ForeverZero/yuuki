@@ -13,6 +13,8 @@ spring:
 
 yuuki:
   host: http://127.0.0.1:${server.port}/
+  plugin:
+    default-active: true
 
 coolq:
   url: http://127.0.0.1:10011
