@@ -6,5 +6,6 @@ data class User(
         val userId: Int,
         val nickName: String?,
         val sex: Sex?,
-        val age: Int?
+        val age: Int?,
+        var role: Role?
 )

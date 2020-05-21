@@ -23,7 +23,8 @@ class YuukiWebServiceImpl : IYuukiWebService {
                 userId = sender.userId,
                 nickName = sender.nickName,
                 sex = sender.sex,
-                age = sender.age
+                age = sender.age,
+                role = null //TODO 处理用户角色
         )
         val uuid = UUID.randomUUID().toString()
         req.session.setAttribute("yuuki-uuid", uuid)
