@@ -45,7 +45,13 @@ class AuthAspect {
 
         // 有效
         val threadLocal = ThreadLocal<User>()
+        // 用户对象写入ThreadLocal
         threadLocal.set(user)
-        return pjp.proceed()
+        try {
+            return pjp.proceed()
+        } finally {
+            // 执行完成，无论成功失败，清除用户对象
+            threadLocal.remove()
+        }
     }
 }
